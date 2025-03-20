@@ -2,14 +2,24 @@ package main
 
 import (
 	"testing"
-
+	"unsafe"
 	"github.com/stretchr/testify/assert"
 )
 
 // go test -v homework_test.go
 
 func ToLittleEndian(number uint32) uint32 {
-	return 0 // need to implement
+	var result uint32
+	const octetsAmount = 32/8
+	pointerToNum := unsafe.Pointer(&number)
+
+	for i := 0; i < octetsAmount; i++ {
+		bitOffset := (octetsAmount - 1 - i) * 8
+		value := *(*uint8)(unsafe.Add(pointerToNum, i))
+		result += uint32(value) << bitOffset
+	}
+
+	return result
 }
 
 func TestСonversion(t *testing.T) {
